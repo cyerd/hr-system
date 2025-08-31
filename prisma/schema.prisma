@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum Role {
+  EMPLOYEE
+  HR
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  UNPAID
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+// MODELS
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String   @unique
+  password    String
+  gender      Gender
+  dateOfBirth DateTime
+  bio         String?
+  isActive    Boolean  @default(false)
+  role        Role     @default(EMPLOYEE)
+
+  // Leave Balances
+  annualLeaveBalance    Int @default(21)
+  sickLeaveBalance      Int @default(10)
+  maternityLeaveBalance Int @default(90)
+  paternityLeaveBalance Int @default(14)
+
+  // Password Reset
+  resetPasswordToken       String?   @unique
+  resetPasswordTokenExpiry DateTime?
+
+  // Relations
+  leaveRequests    LeaveRequest[]
+  overtimeRequests OvertimeRequest[]
+  notifications    Notification[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  AuditLog  AuditLog[]
+}
+
+model LeaveRequest {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  leaveType LeaveType
+  startDate DateTime
+  endDate   DateTime
+  reason    String
+  status    RequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OvertimeRequest {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date   DateTime
+  hours  Float
+  reason String
+  status RequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  message String
+  link      String?  // Add this optional link field
+  relatedModel String? // Add this: e.g., "LeaveRequest"
+  relatedId    String? // Add this: The ID of the request
+  isRead  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  action   String // e.g. "DOWNLOAD_LEAVE_PDF", "APPROVE_LEAVE", "LOGIN"
+  targetId String? // Optional: ID of the affected entity (e.g. leaveRequest.id)
+  metadata String? // Optional: JSON string for extra context (e.g. role, IP, etc.)
+
+  timestamp DateTime @default(now())
+}
