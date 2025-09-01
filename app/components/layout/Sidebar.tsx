@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { LayoutDashboard, FileText, Clock, Users, UserCog, History } from 'lucide-react';
+import { LayoutDashboard, FileText, Clock, Users, UserCog, History, User } from 'lucide-react';
 import { SessionUser } from '@/app/lib/types';
 
 
@@ -18,6 +18,7 @@ const Sidebar = () => {
     { href: '/leave', label: 'Leave Request', icon: FileText },
     { href: '/overtime', label: 'Overtime Request', icon: Clock },
     { href: '/my-requests', label: 'My Requests', icon: History },
+    { href: '/profile', label: 'My Profile', icon: User },
   ];
 
   const adminLinks = [
@@ -35,7 +36,7 @@ const Sidebar = () => {
   const links = getLinks();
 
   return (
-    <aside className="w-64 bg-gray-800 text-white p-4 hidden md:block">
+    <aside className="w-64 bg-gray-800 text-white p-4 hidden md:block mr-10">
       <nav>
         <ul>
           {links.map(({ href, label, icon: Icon }) => (

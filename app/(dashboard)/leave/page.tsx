@@ -34,7 +34,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { Textarea } from "@/components/ui/textarea";
+import { DataTable } from "@/app/components/users/DataTable";
+import { columns } from "@/app/components/requests/MyRequestsColumns";
+import { UnifiedRequest } from "@/app/lib/types";
+
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -45,6 +50,7 @@ const formSchema = z.object({
   }),
   reason: z.string().min(10, { message: "Reason must be at least 10 characters." }),
 });
+
 
 // Mock user data - in a real app, this would come from a session/API
 const mockUser = {
@@ -67,6 +73,30 @@ export default function LeavePage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+const [requests, setRequests] = useState<UnifiedRequest[]>([]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/requests/my-history');
+        if (!response.ok) {
+          throw new Error("Failed to fetch request history.");
+        }
+        const data = await response.json();
+        setRequests(data);
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const submissionData = {
@@ -208,12 +238,20 @@ export default function LeavePage() {
           </Form>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 ">
             <h2 className="text-2xl font-bold mb-4">My Leave History</h2>
-            {/* The Leave History Data Table will go here */}
+
+                    <div className="p-6 bg-white rounded-lg shadow-md border max-h-96 overflow-y-auto">
+                      {isLoading ? (
+                        <p>Loading your requests...</p>
+                      ) : (
+                        <DataTable columns={columns} data={requests} />
+                      )}
+                    </div>
+                  </div>
             <p className="text-center text-gray-500 p-8 border rounded-lg">History table will be implemented next.</p>
         </div>
-      </div>
+    
     </>
   );
 }
