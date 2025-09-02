@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 interface NotificationOptions {
+  link?: string,
   relatedModel?: 'LeaveRequest' | 'OvertimeRequest';
   relatedId?: string;
 }
@@ -15,6 +16,7 @@ interface NotificationOptions {
  * @param options Optional parameters to link the notification to a specific model.
  */
 export const createNotificationForAdmins = async (
+  
   message: string,
   options: NotificationOptions = {}
 ) => {

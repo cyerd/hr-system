@@ -1,58 +1,45 @@
 // middleware.ts
 
+import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow access to the landing page for everyone, bypassing all other checks
-  if (pathname === '/') {
+  // --- THIS IS THE FIX ---
+  // Allow all requests to the landing page and public verification pages to pass through
+  if (pathname === '/' || pathname.startsWith('/verify')) {
     return NextResponse.next();
   }
-  
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   // Define public paths that do not require authentication
-  const publicPaths = [
-    '/login',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/verify', // The base path for verification
-  ];
+  const publicPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
 
-  // Define admin/HR-only paths
-  const adminPaths = [
-    '/admin',
-  ];
-
-  const isPublicPath = publicPaths.some(path => pathname.startsWith(path));
-  const isAdminPath = adminPaths.some(path => pathname.startsWith(path));
-
-  // If user is not authenticated
-  if (!token) {
-    // If the path is not public, redirect to login
-    if (!isPublicPath) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
-    // Allow access to public paths
+  // Check if the current path is one of the public paths
+  if (publicPaths.some(path => pathname.startsWith(path))) {
     return NextResponse.next();
   }
 
-  // If user is authenticated
+  // For all other paths, check for a valid session token
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  // If no token, redirect to the login page
+  if (!token) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  // If user is authenticated, check for role-based access for admin routes
+  const isAdminRoute = pathname.startsWith('/admin');
+  // @ts-ignore
   const userRole = token.role as string;
 
-  // If an authenticated user tries to access a public path (like login), redirect them to the dashboard
-  if (isPublicPath) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
-  
-  // If a non-admin/HR user tries to access an admin path, redirect them
-  if (isAdminPath && !['ADMIN', 'HR'].includes(userRole)) {
-    // You can redirect to a dedicated 'access-denied' page or the main dashboard
-    return NextResponse.redirect(new URL('/dashboard', req.url));
+  if (isAdminRoute && !['ADMIN', 'HR'].includes(userRole)) {
+     const url = req.nextUrl.clone();
+     url.pathname = '/dashboard'; // Or an 'access-denied' page
+     return NextResponse.redirect(url);
   }
 
   // If all checks pass, allow the request to proceed

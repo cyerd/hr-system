@@ -6,14 +6,14 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 interface RouteContext {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(req: Request, context: RouteContext) {
   try {
-    const { id } = context.params;
+    const { id } = (await context.params);
 
     if (!id) {
       return new NextResponse(JSON.stringify({ message: 'Request ID is required' }), {

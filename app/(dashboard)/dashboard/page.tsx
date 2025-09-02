@@ -60,7 +60,7 @@ export default function DashboardPage() {
       day: 'numeric',
       timeZone: 'Africa/Nairobi',
     };
-    setCurrentDate(new Intl.DateTimeFormat('en-US', options).format(date));
+    setCurrentDate(new Intl.DateTimeFormat('en-KE', options).format(date));
 
     const fetchData = async () => {
       if (session) {

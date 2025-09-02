@@ -78,7 +78,7 @@ function ViewRequestComponent() {
             <Calendar className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Date Submitted</p>
-              <p className="font-medium">{new Date(request.createdAt).toLocaleDateString()}</p>
+              <p className="font-medium">{new Date(request.createdAt).toLocaleDateString('en-KE')}</p>
             </div>
           </div>
         </div>
@@ -87,11 +87,11 @@ function ViewRequestComponent() {
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center space-x-2">
               <p className="text-sm text-muted-foreground">Start Date:</p>
-              <p className="font-medium">{new Date(leaveRequest.startDate).toLocaleDateString()}</p>
+              <p className="font-medium">{new Date(leaveRequest.startDate).toLocaleDateString('en-KE')}</p>
             </div>
             <div className="flex items-center space-x-2">
               <p className="text-sm text-muted-foreground">End Date:</p>
-              <p className="font-medium">{new Date(leaveRequest.endDate).toLocaleDateString()}</p>
+              <p className="font-medium">{new Date(leaveRequest.endDate).toLocaleDateString('en-KE')}</p>
             </div>
           </div>
         )}
@@ -100,7 +100,7 @@ function ViewRequestComponent() {
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center space-x-2">
               <p className="text-sm text-muted-foreground">Overtime Date:</p>
-              <p className="font-medium">{new Date(overtimeRequest.date).toLocaleDateString()}</p>
+              <p className="font-medium">{new Date(overtimeRequest.date).toLocaleDateString('en-KE')}</p>
             </div>
             <div className="flex items-center space-x-2">
               <Clock className="h-5 w-5 text-muted-foreground" />

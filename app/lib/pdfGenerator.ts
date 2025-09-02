@@ -93,9 +93,9 @@ export const generateLeavePdf = async (request: LeaveRequestWithUser): Promise<B
   const tableData: TableRow[] = [
     { key: 'Employee Name', value: request.user.name },
     { key: 'Leave Type', value: request.leaveType },
-    { key: 'Start Date', value: new Date(request.startDate).toLocaleDateString() },
-    { key: 'End Date', value: new Date(request.endDate).toLocaleDateString() },
-    { key: 'Report Back Date', value: reportBackDate.toLocaleDateString() },
+    { key: 'Start Date', value: new Date(request.startDate).toLocaleDateString('en-KE') },
+    { key: 'End Date', value: new Date(request.endDate).toLocaleDateString('en-KE') },
+    { key: 'Report Back Date', value: reportBackDate.toLocaleDateString('en-KE') },
     { key: 'Reason', value: request.reason },
     { key: 'Status', value: request.status },
   ];

@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { createNotificationForAdmins } from '@/app/lib/notifications';
 
+
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
@@ -47,11 +48,14 @@ export async function POST(req: Request) {
         gender,
         dateOfBirth: new Date(dateOfBirth),
         ...leaveBalances,
-        // isActive is false by default
       },
     });
-      // Notify admins and HR about the new registration
-    await createNotificationForAdmins(`New user registered: ${newUser.name} (${newUser.email}). Account requires activation.`);
+
+    // 6. Create a notification for admins with the correct link
+    await createNotificationForAdmins(
+      `New user registered: ${newUser.name}`,
+      { link: '/admin/hr/manage-users' } // This is the direct link for the notification
+    );
 
     return NextResponse.json(
       { message: 'User registered successfully. Awaiting activation.' },
@@ -65,3 +69,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

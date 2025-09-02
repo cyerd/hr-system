@@ -104,7 +104,7 @@ export default function VerifyOvertimePage() {
                     </div>
                      <div className="flex justify-between border-b pb-2">
                         <span className="font-medium text-gray-500">Overtime Date:</span>
-                        <span className="text-gray-800 font-semibold">{new Date(request.date).toLocaleDateString()}</span>
+                        <span className="text-gray-800 font-semibold">{new Date(request.date).toLocaleDateString('en-KE')}</span>
                     </div>
                      <div className="flex justify-between border-b pb-2">
                         <span className="font-medium text-gray-500">Hours Worked:</span>

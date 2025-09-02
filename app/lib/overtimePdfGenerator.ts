@@ -77,7 +77,7 @@ export const generateOvertimePdf = async (request: OvertimeRequestWithUser): Pro
 
   const tableData: TableRow[] = [
     { key: 'Employee Name', value: request.user.name },
-    { key: 'Overtime Date', value: new Date(request.date).toLocaleDateString() },
+    { key: 'Overtime Date', value: new Date(request.date).toLocaleDateString('en-KE') },
     { key: 'Hours Worked', value: request.hours.toString() },
     { key: 'Reason', value: request.reason },
     { key: 'Status', value: request.status },

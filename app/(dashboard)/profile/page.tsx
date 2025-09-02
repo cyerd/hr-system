@@ -124,7 +124,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Gift className="h-4 w-4 text-gray-500" />
-                  <span>Born on {new Date(profile.dateOfBirth).toLocaleDateString()}</span>
+                  <span>Born on {new Date(profile.dateOfBirth).toLocaleDateString('en-KE')}</span>
                 </div>
                  <div className="flex items-center space-x-2">
                   <span className="font-semibold text-gray-500">Gender:</span>
