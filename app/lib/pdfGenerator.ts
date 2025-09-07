@@ -83,7 +83,7 @@ const addWatermark = (doc: jsPDF) => {
 
 export const generateLeavePdf = async (request: LeaveRequestWithUser): Promise<Buffer> => {
   const doc = new jsPDF();
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://avotrack.vercel.app';
   const verificationUrl = `${baseUrl}/verify/${request.id}`;
   const qrCodeDataURL = await qrcode.toDataURL(verificationUrl);
 
