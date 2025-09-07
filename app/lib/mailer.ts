@@ -57,7 +57,7 @@ export const sendEmail = async (mailOptions: MailOptions) => {
  * @param token - The unique password reset token.
  */
 export const sendPasswordResetEmail = async (to: string, token: string) => {
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://avotrack.vercel.app';
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://avotrack.net';
   const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
   const html = `
