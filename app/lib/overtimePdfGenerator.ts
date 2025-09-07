@@ -70,7 +70,7 @@ const addWatermark = (doc: jsPDF) => {
  */
 export const generateOvertimePdf = async (request: OvertimeRequestWithUser): Promise<Buffer> => {
   const doc = new jsPDF();
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://avotrack.vercel.app';
   // Note: We need a public verification page for overtime as well for this to be fully functional
   const verificationUrl = `${baseUrl}/verify/overtime/${request.id}`;
   const qrCodeDataURL = await qrcode.toDataURL(verificationUrl);
